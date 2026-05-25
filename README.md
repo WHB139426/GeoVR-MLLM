@@ -3,7 +3,7 @@
 🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence.
 
 <div align="center">
-  <img src="method.png"/>
+  <img src="assets/method.png"/>
 </div><br/>
 
 ## 🛠️ Install
