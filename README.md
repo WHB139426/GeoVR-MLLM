@@ -8,8 +8,8 @@
 
 ## 📝 TODO List
 
-- [-] Release model weights and inference code
-- [x] Release model weights and inference code
+- [ ] 
+- [x] 
 
 ## 🛠️ Install
 1. Clone this repository and navigate to folder
