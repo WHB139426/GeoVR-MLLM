@@ -7,15 +7,4 @@ wandb/*
 *.pyo
 *.egg-info/
 
-visualize/*.png
-visualize/vggt_extracted_frames/*
-visualize/qwen_extracted_frames/*
-
 scripts/update.sh
-
-backup/*
-
-result_gpu_0.json
-result_gpu_1.json
-result_gpu_2.json
-result_gpu_3.json
