@@ -10,7 +10,7 @@
 1. Clone this repository and navigate to folder
 ```bash
 git clone git@github.com:WHB139426/GeoVR-MLLM.git
-cd GeoVR
+cd GeoVR-MLLM
 ```
 
 2. Install Package
