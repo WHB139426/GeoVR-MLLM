@@ -1,5 +1,11 @@
 <h2 align="center"> GeoVR: Learning Geometric Video Representations for Spatial Intelligence within Multimodal Large Language Models </h2>
 
+🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence.
+
+<div align="center">
+  <img src="model.pdf"/>
+</div><br/>
+
 ## 🛠️ Install
 1. Clone this repository and navigate to folder
 ```bash
