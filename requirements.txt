@@ -1,0 +1,26 @@
+torch==2.6.0
+torchvision==0.21.0
+transformers==5.5.0
+numpy==1.26.4
+
+av==16.0.1
+decord==0.6.0
+opencv-python==4.8.1.78
+qwen-vl-utils==0.0.14
+
+deepspeed==0.17.1
+peft==0.15.0
+accelerate
+wandb
+
+# for depthanything3
+omegaconf
+moviepy
+addict
+plyfile
+pycolmap
+trimesh
+evo
+open3d
+
+# flash-attn==2.7.3 --no-build-isolation
