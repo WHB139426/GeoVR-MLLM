@@ -8,8 +8,9 @@
 
 ## 📝 TODO List
 
-- [ ] 
-- [x] 
+- [x] Release training/evaluation scripts and GeoVR-2B weights
+- [ ] Release GeoVR-4B/8B weights
+- [ ] Release GeoVR-8B weights trained on mixed datasets
 
 ## 🛠️ Install
 1. Clone this repository and navigate to folder
