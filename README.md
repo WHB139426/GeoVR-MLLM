@@ -31,6 +31,7 @@ pip install flash-attn==2.7.3 --no-build-isolation
 Set your own `weight_path` to storage the pretrained weights. 
 
 1. Download our released model weights
+
 | Model | Base Model | Data | Download |
 | :--- | :--- | :--- | :--- |
 | `GeoVR-Qwen3-VL-2B` | Qwen3-VL-2B-Instruct | VSI-590K + VLM-3R | [🤗Link](xxx) |
