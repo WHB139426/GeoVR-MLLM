@@ -54,8 +54,8 @@ The folder should be organized as follows:
 │   └── GeoVR-Qwen3-VL-2B
 │   └── GeoVR-Qwen3-VL-4B
 │   └── Qwen3-VL-2B-Instruct (Optional, only for training)
-│   └── Qwen3-VL-2B-Instruct (Optional, only for training)
 │   └── Qwen3-VL-4B-Instruct (Optional, only for training)
+│   └── Qwen3-VL-8B-Instruct (Optional, only for training)
 │   └── VGGT-Omega (Optional, only for training)
 │   └── VGGT-1B (Optional, only for training)
 │   └── DA3-GIANT-1.1 (Optional, only for training)
