@@ -10,3 +10,5 @@ export SCALE=False
 
 export NUM_FRAME=128
 CUDA_VISIBLE_DEVICES=0,1 python eval_vsi.py
+
+python metric_result.py

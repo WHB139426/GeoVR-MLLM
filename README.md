@@ -147,10 +147,6 @@ print(output_text)
 ```bash
 bash scripts/eval.sh
 ```
-4. Once the inference is complete, run the corresponding Python script to calculate the final metrics:
-```bash
-python result.py
-```
 
 ## 💡 Training
 1. Download the training data [[🤗VSI-590K](https://huggingface.co/datasets/nyu-visionx/VSI-590K)], [[🤗VLM-3R-DATA](https://huggingface.co/datasets/Journey9ni/VLM-3R-DATA)] into your own `data_path` and unzip the downloaded files. The folder should be organized as follows:
