@@ -37,7 +37,7 @@ Set your own `weight_path` to storage the pretrained weights.
 1. Download our released model weights
 
 | Model | Base MLLM | 3D Teacher | Data | Download |
-| :--- | :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- | :--- |
 | `GeoVR-Qwen3-VL-2B` | Qwen3-VL-2B-Instruct | VGGT-1B | VSI-590K + VLM-3R | [🤗TBD](xxx) |
 | `GeoVR-Qwen3-VL-4B` | Qwen3-VL-4B-Instruct | VGGT-1B | VSI-590K + VLM-3R | [🤗TBD](xxx) |
 
