@@ -27,7 +27,7 @@ model_max_length=$((16*1024))
 # I haven't find a solution to enforce decord without modifying transformers's source code; @FIXME
 
 # data hyperparameters
-datasets=vsi590k
+datasets=vsi590k_vlm3r
 max_pixels=$((576*32*32))
 min_pixels=$((16*32*32))
 video_max_frames=32
