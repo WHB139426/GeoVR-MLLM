@@ -163,7 +163,6 @@ python result.py
 │       └── scannetppv2/
 │   └── VLM-3R-DATA
 │       └── vlm3r_vsi_205k.json
-│       └── vlm3r_vst_132k.json
 │       └── vsibench_train/
 │       └── vstibench_train/
 ```
