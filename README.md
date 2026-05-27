@@ -6,6 +6,10 @@
   <img src="assets/method.png"/>
 </div><br/>
 
+💡 We sharpen our model by incorporating:
+- **Multi-Objective Geometric Learning:** Jointly optimizing camera poses, depth maps and metric scales to capture dynamic multi-view consistency and static physical scales.
+- **Hierarchical Feature Distillation:** Aligning multi-scale representations from 3D foundation models (e.g., VGGT) to seamlessly bridge low-level geometry and high-level 3D semantics.
+
 ## 📝 TODO List
 
 - [x] Release training/evaluation scripts and GeoVR-2B/4B weights
