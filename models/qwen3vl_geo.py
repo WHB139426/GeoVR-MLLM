@@ -1173,11 +1173,9 @@ class Qwen3VLModel(Qwen3VLPreTrainedModel):
                     # ==========================================
                     # 🌟 Add 3D position coordinates for Scale Token
                     # ==========================================
-                    # 动态检查当前 Block 的实际长度。多出来的 Token 就是 Scale Token！
                     block_len = end_idx - start_idx
                     current_len = vision_position_ids.shape[1]
                     if self.config.add_scale and current_len < block_len:
-                        # 补齐缺少的 token 的坐标（复制当前块最后一个坐标作为 Scale Token 的坐标）
                         diff = block_len - current_len
                         scale_position = vision_position_ids[:, -1:].repeat(1, diff)
                         vision_position_ids = torch.cat([vision_position_ids, scale_position], dim=1)
@@ -1781,10 +1779,10 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
                     vid_token_count += 1
                     # Once a spatial Patch has filled an entire frame, immediately insert a Camera Token slot
                     if vid_token_count == current_hw_merged:
-                        new_ids.append(video_token_id)                 # 用 video_token_id 占位
-                        if attn_list is not None: new_attn.append(1)   # 注意力不屏蔽
-                        if mm_list is not None: new_mm.append(2)       # 模态设为 2 (video)
-                        if lbls_list is not None: new_lbls.append(-100) # Loss 计算忽略
+                        new_ids.append(video_token_id)                 
+                        if attn_list is not None: new_attn.append(1)   
+                        if mm_list is not None: new_mm.append(2)       
+                        if lbls_list is not None: new_lbls.append(-100)
 
                         vid_token_count = 0
                         current_t += 1
@@ -1830,28 +1828,22 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             video_token_id = self.config.video_token_id
             merge_ratio = self.config.vision_config.spatial_merge_size ** 2
 
-            # =========================================================================
-            # 🌟 Safety lock: 计算当前状态下，每个视频应该有的 token 数量
-            # =========================================================================
             expected_tokens_list = []
             for thw in video_grid_thw:
                 t, h, w = thw.tolist()
                 hw_merged = (h * w) // merge_ratio
                 if already_has_camera:
-                    expected_tokens_list.append(t * (hw_merged + 1)) # 如果已经有 Camera Token，每帧多 1 个
+                    expected_tokens_list.append(t * (hw_merged + 1))
                 else:
                     expected_tokens_list.append(t * hw_merged)
                     
             expected_total_tokens = sum(expected_tokens_list)
             actual_vid_tokens = (input_ids == video_token_id).sum().item()
             
-            # 如果实际数量不等于期望数量，说明已经扩展过了或没有视频，直接返回
             if actual_vid_tokens != expected_total_tokens or expected_total_tokens == 0:
                 return input_ids, attention_mask, mm_token_type_ids, labels
             # =========================================================================
 
-            # =========================================================================
-            # 🌟 动态扩展，只在整个视频结尾插入 Scale Token
             # =========================================================================
             out_ids_batch, out_attn_batch, out_mm_batch, out_lbls_batch = [], [], [], []
             global_vid_idx = 0
@@ -1879,9 +1871,8 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
 
                     if token == video_token_id:
                         vid_token_count += 1
-                        # 当且仅当凑齐了当前视频的所有 Token，才在末尾插入 Scale Token
                         if vid_token_count == current_video_expected_len:
-                            new_ids.append(video_token_id)                 # 用 video_token_id 占位
+                            new_ids.append(video_token_id)                 
                             if attn_list is not None: new_attn.append(1)
                             if mm_list is not None: new_mm.append(2)
                             if lbls_list is not None: new_lbls.append(-100)
@@ -2132,7 +2123,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
 
                 if self.config.add_scale:
                     current_layer_scale_features.append(this_video_states[-1, :]) # [hidden_size]
-                    this_video_states = this_video_states[:-1, :] # 剩下的还给原有的 Camera/Video 处理
+                    this_video_states = this_video_states[:-1, :]
 
                 this_video_states = this_video_states.view(t, frame_len, -1) # [frame_num/2, hw_merged + 1, hidden_size]
                 # exclude Camera Token and only preserve Camera Token
@@ -2827,9 +2818,6 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         return input_ids, model_kwargs
 
     def generate(self, *args, **kwargs):
-        """
-        拦截器：在进入 Hugging Face 底层生成循环前，一把拦截并提前扩充视频数据的 Token 长度。
-        """
         input_ids = args[0] if len(args) > 0 else kwargs.get("input_ids")
         video_grid_thw = kwargs.get("video_grid_thw")
         if self.config.add_camera:
