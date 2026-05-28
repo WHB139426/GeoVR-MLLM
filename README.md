@@ -142,7 +142,9 @@ print(output_text)
 │       └── arkitscenes/
 │       └──...
 ```
-2. In the script (`scripts/eval.sh`), change the `MODEL_ID` to `weight_path/GeoVR-Qwen3-VL-2B` and `DATA_DIR` to `data_path/VSI-Bench`.
+2. In the script (`scripts/eval.sh`), change the 
+    - `MODEL_ID` to `weight_path/GeoVR-Qwen3-VL-2B`,
+    - `DATA_DIR` to `data_path/VSI-Bench`.
 3. Execute the evaluation script. You can easily control the number of GPUs used for parallel inference by modifying `NUM_GPUS` and `CUDA_VISIBLE_DEVICES` within the script.
 ```bash
 bash scripts/eval.sh
