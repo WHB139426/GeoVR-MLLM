@@ -162,7 +162,12 @@ bash scripts/eval.sh
 │       └── vsibench_train/
 │       └── vstibench_train/
 ```
-2. In the script (`scripts/train.sh`), change the `llm` to `weight_path/Qwen3-VL-2B-Instruct`, `geo` to `weight_path/VGGT-1B`, `metric` to `weight_path/DA3METRIC-LARGE`, `data_path` to `data_path`, and `output_dir` to `weight_path/checkpoints`.
+2. In the script (`scripts/train.sh`), change the 
+    - `llm` to `weight_path/Qwen3-VL-2B-Instruct`,
+    - `geo` to `weight_path/VGGT-1B`, we also support training with other 3D models like VGGT-Omega or DA-3,
+    - `metric` to `weight_path/DA3METRIC-LARGE`, 
+    - `data_path` to `data_path` ,
+    - `output_dir` to `weight_path/checkpoints`.
 3. Execute the training script.
 ```bash
 bash scripts/train.sh

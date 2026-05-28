@@ -15,6 +15,7 @@ def process_chunk(gpu_id, data_chunk, output_file):
     num_frames = int(os.environ['NUM_FRAME'])
     MODEL_ID = os.environ['MODEL_ID']
     GEO_ID = os.environ.get('GEO_ID', None)
+    METRIC_ID = os.environ.get('METRIC_ID', None)
     CAMERA = os.environ.get('CAMERA', 'False').lower() == 'true'
     DEPTH = os.environ.get('DEPTH', 'False').lower() == 'true'
     DISTILL = os.environ.get('DISTILL', 'False').lower() == 'true'
@@ -25,6 +26,7 @@ def process_chunk(gpu_id, data_chunk, output_file):
         model = Qwen3VLForConditionalGeneration.from_pretrained(
             MODEL_ID,
             geometry_encoder_path=GEO_ID,
+            metric_model_path=METRIC_ID,
             dtype=torch.bfloat16,
             attn_implementation="flash_attention_2",
             add_camera=CAMERA,
