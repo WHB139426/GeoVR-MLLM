@@ -1,4 +1,4 @@
-<h2 align="center"> GeoVR: Learning Geometric Video Representations for Spatial Intelligence within Multimodal Large Language Models </h2>
+<h2 align="center"> Learning Geometric Representations from Videos for Spatial Intelligent Multimodal Large Language Models </h2>
 
 🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence.
 
@@ -39,7 +39,9 @@ Set your own `weight_path` to storage the pretrained weights.
 
 | Model | Base MLLM | 3D Teacher | Data | Download |
 | :--- | :--- | :--- | :--- | :--- |
-| `GeoVR-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-Qwen3-VL-2B) |
+| `GeoVR-VGGT-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-VGGT-Qwen3-VL-2B) |
+| `GeoVR-VGGT-Qwen3-VL-4B` | [Qwen3-VL-4B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-VGGT-Qwen3-VL-4B) |
+| `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-Omega-Qwen3-VL-2B) |
 
 2. Download the pretrained weights (Optional, only for training) [[🤗VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega)], [[🤗VGGT-1B](https://huggingface.co/facebook/VGGT-1B)], [[🤗DA3-GIANT-1.1](https://huggingface.co/depth-anything/DA3-GIANT-1.1)], [[🤗DA3METRIC-LARGE](https://huggingface.co/depth-anything/DA3METRIC-LARGE)], [[🤗Qwen3-VL](https://huggingface.co/collections/Qwen/qwen3-vl)] in your own `weight_path`. 
 
@@ -55,7 +57,7 @@ The folder should be organized as follows:
 │   └── depth_anything_3
 │   └── ...
 ├── weight_path
-│   └── GeoVR-Qwen3-VL-2B
+│   └── GeoVR-VGGT-Qwen3-VL-2B
 │   └── VGGT-Omega (Optional, only for training)
 │   └── VGGT-1B (Optional, only for training)
 │   └── DA3-GIANT-1.1 (Optional, only for training)
@@ -73,7 +75,7 @@ from transformers import AutoProcessor
 from models.qwen3vl_geo import Qwen3VLForConditionalGeneration
 
 device = 'cuda:0'
-model_id = "/your/path/to/GeoVR-Qwen3-VL-2B"
+model_id = "/your/path/to/GeoVR-VGGT-Qwen3-VL-2B"
 
 model = Qwen3VLForConditionalGeneration.from_pretrained(
     model_id,
@@ -143,7 +145,7 @@ print(output_text)
 │       └──...
 ```
 2. In the script (`scripts/eval.sh`), change the 
-    - `MODEL_ID` to `weight_path/GeoVR-Qwen3-VL-2B`,
+    - `MODEL_ID` to `weight_path/GeoVR-VGGT-Qwen3-VL-2B`,
     - `DATA_DIR` to `data_path/VSI-Bench`.
 3. Execute the evaluation script. You can easily control the number of GPUs used for parallel inference by modifying `NUM_GPUS` and `CUDA_VISIBLE_DEVICES` within the script.
 ```bash
