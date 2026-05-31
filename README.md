@@ -40,9 +40,9 @@ Set your own `weight_path` to storage the pretrained weights.
 | Model | Base MLLM | 3D Teacher | Data | Download |
 | :--- | :--- | :--- | :--- | :--- |
 | `GeoVR-VGGT-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-VGGT-Qwen3-VL-2B) |
+| `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-Omega-Qwen3-VL-2B) |
 | `GeoVR-VGGT-Qwen3-VL-4B` | [Qwen3-VL-4B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-VGGT-Qwen3-VL-4B) |
 | `GeoVR-VGGT-Qwen3-VL-8B` | [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-VGGT-Qwen3-VL-8B) |
-| `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | [🤗TBD](https://huggingface.co/WHB139426/GeoVR-Omega-Qwen3-VL-2B) |
 
 2. Download the pretrained weights (Optional, only for training) [[🤗VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega)], [[🤗VGGT-1B](https://huggingface.co/facebook/VGGT-1B)], [[🤗DA3-GIANT-1.1](https://huggingface.co/depth-anything/DA3-GIANT-1.1)], [[🤗DA3METRIC-LARGE](https://huggingface.co/depth-anything/DA3METRIC-LARGE)], [[🤗Qwen3-VL](https://huggingface.co/collections/Qwen/qwen3-vl)] in your own `weight_path`. 
 
