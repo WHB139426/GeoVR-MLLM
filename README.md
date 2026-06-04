@@ -44,7 +44,7 @@ Set your own `weight_path` to storage the pretrained weights.
 1. Download our released model weights
 
 | Model | Base MLLM | 3D Teacher | Data | VSI-Bench | Download |
-| :--- | :--- | :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | `GeoVR-VGGT-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | 69.1 | [🤗link](https://huggingface.co/WHB139426/GeoVR/tree/main/GeoVR-VGGT-Qwen3-VL-2B) |
 | `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | - | TBD |
 | `GeoVR-VGGT-Qwen3-VL-4B` | [Qwen3-VL-4B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | - | TBD |
