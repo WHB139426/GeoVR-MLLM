@@ -1173,9 +1173,11 @@ class Qwen3VLModel(Qwen3VLPreTrainedModel):
                     # ==========================================
                     # 🌟 Add 3D position coordinates for Scale Token
                     # ==========================================
+                    # 动态检查当前 Block 的实际长度。多出来的 Token 就是 Scale Token！
                     block_len = end_idx - start_idx
                     current_len = vision_position_ids.shape[1]
                     if self.config.add_scale and current_len < block_len:
+                        # 补齐缺少的 token 的坐标（复制当前块最后一个坐标作为 Scale Token 的坐标）
                         diff = block_len - current_len
                         scale_position = vision_position_ids[:, -1:].repeat(1, diff)
                         vision_position_ids = torch.cat([vision_position_ids, scale_position], dim=1)
@@ -1525,6 +1527,9 @@ class Qwen3VLCausalLMOutputWithPast(ModelOutput):
     camera_loss_T: torch.FloatTensor | None = None
     camera_loss_R: torch.FloatTensor | None = None
     camera_loss_FL: torch.FloatTensor | None = None
+    pred_pose_enc_list: torch.FloatTensor | None = None
+    pred_depth_list: torch.FloatTensor | None = None 
+    pred_scale: torch.FloatTensor | None = None 
     logits: torch.FloatTensor | None = None
     past_key_values: Cache | None = None
     hidden_states: tuple[torch.FloatTensor] | None = None
@@ -1779,10 +1784,10 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
                     vid_token_count += 1
                     # Once a spatial Patch has filled an entire frame, immediately insert a Camera Token slot
                     if vid_token_count == current_hw_merged:
-                        new_ids.append(video_token_id)                 
-                        if attn_list is not None: new_attn.append(1)   
-                        if mm_list is not None: new_mm.append(2)       
-                        if lbls_list is not None: new_lbls.append(-100)
+                        new_ids.append(video_token_id)                 # 用 video_token_id 占位
+                        if attn_list is not None: new_attn.append(1)   # 注意力不屏蔽
+                        if mm_list is not None: new_mm.append(2)       # 模态设为 2 (video)
+                        if lbls_list is not None: new_lbls.append(-100) # Loss 计算忽略
 
                         vid_token_count = 0
                         current_t += 1
@@ -1828,22 +1833,28 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             video_token_id = self.config.video_token_id
             merge_ratio = self.config.vision_config.spatial_merge_size ** 2
 
+            # =========================================================================
+            # 🌟 Safety lock: 计算当前状态下，每个视频应该有的 token 数量
+            # =========================================================================
             expected_tokens_list = []
             for thw in video_grid_thw:
                 t, h, w = thw.tolist()
                 hw_merged = (h * w) // merge_ratio
                 if already_has_camera:
-                    expected_tokens_list.append(t * (hw_merged + 1))
+                    expected_tokens_list.append(t * (hw_merged + 1)) # 如果已经有 Camera Token，每帧多 1 个
                 else:
                     expected_tokens_list.append(t * hw_merged)
                     
             expected_total_tokens = sum(expected_tokens_list)
             actual_vid_tokens = (input_ids == video_token_id).sum().item()
             
+            # 如果实际数量不等于期望数量，说明已经扩展过了或没有视频，直接返回
             if actual_vid_tokens != expected_total_tokens or expected_total_tokens == 0:
                 return input_ids, attention_mask, mm_token_type_ids, labels
             # =========================================================================
 
+            # =========================================================================
+            # 🌟 动态扩展，只在整个视频结尾插入 Scale Token
             # =========================================================================
             out_ids_batch, out_attn_batch, out_mm_batch, out_lbls_batch = [], [], [], []
             global_vid_idx = 0
@@ -1871,8 +1882,9 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
 
                     if token == video_token_id:
                         vid_token_count += 1
+                        # 当且仅当凑齐了当前视频的所有 Token，才在末尾插入 Scale Token
                         if vid_token_count == current_video_expected_len:
-                            new_ids.append(video_token_id)                 
+                            new_ids.append(video_token_id)                 # 用 video_token_id 占位
                             if attn_list is not None: new_attn.append(1)
                             if mm_list is not None: new_mm.append(2)
                             if lbls_list is not None: new_lbls.append(-100)
@@ -2019,11 +2031,12 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         camera_loss_T = torch.tensor(0).to(hidden_states.device)
         camera_loss_R = torch.tensor(0).to(hidden_states.device)
         camera_loss_FL = torch.tensor(0).to(hidden_states.device)
+        pred_pose_enc_list = None
         if self.config.add_camera and self.training:
             for batch_idx in range(len(camera_out_features)):
                 feat = camera_out_features[batch_idx] # torch.size(frame_num, hidden_size)
                 camera_out_features[batch_idx] = feat
-            camera_loss, camera_loss_T, camera_loss_R, camera_loss_FL = self.compute_camera_loss(gt_pose_enc_list, camera_out_features,)
+            camera_loss, camera_loss_T, camera_loss_R, camera_loss_FL, pred_pose_enc_list = self.compute_camera_loss(gt_pose_enc_list, camera_out_features,)
 
         # =========================================================================
         # Compute depth loss
@@ -2031,6 +2044,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         depth_loss = torch.tensor(0).to(hidden_states.device)   
         depth_loss_reg = torch.tensor(0).to(hidden_states.device)     
         depth_loss_grad = torch.tensor(0).to(hidden_states.device)
+        pred_depth_list = None
         if self.config.add_depth and self.training:
             num_layers = len(all_layers_video_features)
             batch_size = len(all_layers_video_features[0])
@@ -2046,15 +2060,16 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             # print(pixel_values_geo.shape, video_grid_thw.shape, video_grid_thw) # used to calculate Original_H, Original_W, Target_H, Target_W,
             with torch.cuda.amp.autocast(dtype=torch.bfloat16):
                 if self.config.depth_loss_type == 'l1':
-                    depth_loss_conf, depth_loss_reg, depth_loss_grad = self.compute_depth_loss(per_batch_all_layers_video_features, gt_depth_list, gt_depth_conf_list, video_grid_thw)
+                    depth_loss_conf, depth_loss_reg, depth_loss_grad, pred_depth_list = self.compute_depth_loss(per_batch_all_layers_video_features, gt_depth_list, gt_depth_conf_list, video_grid_thw)
                 elif self.config.depth_loss_type == 'silog':
-                    depth_loss_conf, depth_loss_reg, depth_loss_grad = self.compute_silog_loss(per_batch_all_layers_video_features, gt_depth_list, gt_depth_conf_list, video_grid_thw)
+                    depth_loss_conf, depth_loss_reg, depth_loss_grad, pred_depth_list = self.compute_silog_loss(per_batch_all_layers_video_features, gt_depth_list, gt_depth_conf_list, video_grid_thw)
             depth_loss = depth_loss_conf + depth_loss_reg + depth_loss_grad
 
         # =========================================================================
         # Compute scale loss
         # =========================================================================
         scale_loss = torch.tensor(0).to(hidden_states.device)  
+        pred_scale = None
         if self.config.add_scale and self.training:
             gt_scale = self.get_gt_scale(pixel_values_geo, gt_pose_enc_list, gt_depth_list, gt_depth_conf_list)
             pred_scale = self.scale_head(scale_out_features)
@@ -2079,6 +2094,9 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             depth_loss_grad=depth_loss_grad,
             distill_loss=distill_loss,
             scale_loss=scale_loss,
+            pred_pose_enc_list=pred_pose_enc_list,
+            pred_depth_list=pred_depth_list,
+            pred_scale=pred_scale,
             logits=logits,
             past_key_values=outputs.past_key_values,
             hidden_states=outputs.hidden_states,
@@ -2123,7 +2141,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
 
                 if self.config.add_scale:
                     current_layer_scale_features.append(this_video_states[-1, :]) # [hidden_size]
-                    this_video_states = this_video_states[:-1, :]
+                    this_video_states = this_video_states[:-1, :] # 剩下的还给原有的 Camera/Video 处理
 
                 this_video_states = this_video_states.view(t, frame_len, -1) # [frame_num/2, hw_merged + 1, hidden_size]
                 # exclude Camera Token and only preserve Camera Token
@@ -2339,9 +2357,13 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         total_loss_R = 0.0
         total_loss_FL = 0.0
 
+        pred_pose_enc_list = []
+
         for i in range(batch_size):
             pred_pose_enc_i = self.camera_head(camera_out_features[i].unsqueeze(0)) # [1, frame_num, 9]
             gt_pose_enc_i = gt_pose_enc_list[i] # [1, frame_num, 9]
+
+            pred_pose_enc_list.append(pred_pose_enc_i)
 
             camera_loss_out_i = self._compute_camera_loss(pred_pose_enc_i, gt_pose_enc_i)
             total_camera_loss += camera_loss_out_i['loss_camera']
@@ -2354,7 +2376,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         camera_loss_R = total_loss_R / batch_size
         camera_loss_FL = total_loss_FL / batch_size
 
-        return camera_loss, camera_loss_T, camera_loss_R, camera_loss_FL
+        return camera_loss, camera_loss_T, camera_loss_R, camera_loss_FL, pred_pose_enc_list
 
     def _compute_camera_loss(
         self, 
@@ -2394,6 +2416,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
     ):
         batch_size = len(per_batch_all_layers_video_features)
         totoal_silog_loss = 0
+        pred_depth_list = []
 
         for i in range(batch_size):
             all_layers_video_features = per_batch_all_layers_video_features[i]
@@ -2406,6 +2429,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             Target_H = gt_depth.shape[-2]
             Target_W = gt_depth.shape[-1]
             pred_depth, pred_conf = self.dpt_head(Original_H=Original_H, Original_W=Original_W, Target_H=Target_H, Target_W=Target_W, all_hidden_states=all_layers_video_features)
+            pred_depth_list.append(pred_depth)
 
             # apply mask
             if filter_ratio > 0:
@@ -2420,7 +2444,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
 
         totoal_silog_loss = totoal_silog_loss/batch_size
 
-        return totoal_silog_loss, torch.tensor(0).to(totoal_silog_loss.device), torch.tensor(0).to(totoal_silog_loss.device)
+        return totoal_silog_loss, torch.tensor(0).to(totoal_silog_loss.device), torch.tensor(0).to(totoal_silog_loss.device), pred_depth_list
 
     def compute_depth_loss(
         self,
@@ -2433,6 +2457,8 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         total_depth_loss_conf = 0.0
         total_depth_loss_reg = 0.0
         total_depth_loss_grad = 0.0
+        pred_depth_list = []
+
         for i in range(batch_size):
             all_layers_video_features = per_batch_all_layers_video_features[i]
             t, h, w = video_grid_thw[i].cpu().view(-1).tolist()
@@ -2444,6 +2470,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
             Target_H = gt_depth.shape[-2]
             Target_W = gt_depth.shape[-1]
             pred_depth, pred_conf = self.dpt_head(Original_H=Original_H, Original_W=Original_W, Target_H=Target_H, Target_W=Target_W, all_hidden_states=all_layers_video_features)
+            pred_depth_list.append(pred_depth)
 
             outputs = self._compute_depth_loss(pred_depth, pred_conf, gt_depth, gt_depth_conf)
             loss_conf = outputs['loss_conf']
@@ -2457,7 +2484,7 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         total_depth_loss_reg = total_depth_loss_reg/batch_size
         total_depth_loss_grad = total_depth_loss_grad/batch_size
 
-        return total_depth_loss_conf, total_depth_loss_reg, total_depth_loss_grad
+        return total_depth_loss_conf, total_depth_loss_reg, total_depth_loss_grad, pred_depth_list
 
     def _compute_depth_loss(
             self, 
@@ -2818,6 +2845,9 @@ class Qwen3VLForConditionalGeneration(Qwen3VLPreTrainedModel, GenerationMixin):
         return input_ids, model_kwargs
 
     def generate(self, *args, **kwargs):
+        """
+        拦截器：在进入 Hugging Face 底层生成循环前，一把拦截并提前扩充视频数据的 Token 长度。
+        """
         input_ids = args[0] if len(args) > 0 else kwargs.get("input_ids")
         video_grid_thw = kwargs.get("video_grid_thw")
         if self.config.add_camera:

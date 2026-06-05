@@ -8,3 +8,12 @@ wandb/*
 *.egg-info/
 
 scripts/update.sh
+
+pca_images/*
+pca.png
+rec_images/*
+
+geo_reconstruction.ply
+mllm_reconstruction.ply
+geo_cameras.json
+mllm_cameras.json
