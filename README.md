@@ -106,8 +106,8 @@ messages = [
     {
         "role": "user",
         "content": [
-            {"type": "video", "video": './assets/scene0086_02.mp4',},
-            {"type": "text", "text": "What is the length of the longest dimension (length, width, or height) of the window, measured in centimeters?\nPlease answer the question ONLY using a single Arabic numeral."},
+            {"type": "video", "video": './assets/scene0111_02.mp4',},
+            {"type": "text", "text": "Measuring distance from the nearest points, select the closest object (trash bin, door, table, refrigerator) to the tv. If multiple exist, use the nearest instance.\nOptions:\nA. trash bin\nB. door\nC. table\nD. refrigerator\nAnswer with the option's letter from the given choices directly."},
         ],
     }
 ]
