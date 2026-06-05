@@ -4,6 +4,7 @@
 
 <h5 align="center">
 
+[![arXiv](https://img.shields.io/badge/Arxiv-2606.05833-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2606.05833)
 [![hf_space](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue.svg)](https://huggingface.co/WHB139426/GeoVR)
 
 </h5>
@@ -187,7 +188,12 @@ bash scripts/train.sh
 ## ✏️ Citation
 If you find our paper and code useful in your research, please consider giving a star :star: and citation :pencil:.
 ```BibTeX
-
+@article{wang2026learning,
+  title={Learning Geometric Representations from Videos for Spatial Intelligent Multimodal Large Language Models},
+  author={Wang, Haibo and Huang, Lifu},
+  journal={arXiv preprint arXiv:2606.05833},
+  year={2026}
+}
 ```
 
 ## 🤝 Acknowledgement
