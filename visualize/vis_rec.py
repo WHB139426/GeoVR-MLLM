@@ -18,8 +18,8 @@ from utils.preprocess import recover_qwen_video_to_numpy, preprocess_geo_frames
 # CONFIGURATION
 # ==========================================
 DEVICE = 'cuda:0'
-QWEN_WEIGHTS = '/your/path/to/GeoVR-VGGT-Qwen3-VL-2B'
-VGGT_WEIGHTS = '/your/path/to/VGGT-1B'
+QWEN_WEIGHTS = '/your/path/to/GeoVR-Omega-Qwen3-VL-2B'
+VGGT_WEIGHTS = '/your/path/to/VGGT-Omega/vggt_omega_1b_512.pt'
 METRIC_WITHTS = '/your/path/to/DA3METRIC-LARGE'
 vggt_patch_size = 16 if 'Omega' in VGGT_WEIGHTS else 14
 
