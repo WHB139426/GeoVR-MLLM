@@ -15,7 +15,7 @@
 
 💡 We sharpen our model by incorporating:
 - **Multi-Objective Geometric Learning:** Jointly optimizing camera poses, depth maps and metric scales to capture dynamic multi-view consistency and static physical scales.
-- **Hierarchical Feature Distillation:** Aligning multi-scale representations from 3D foundation models (e.g., VGGT) to seamlessly bridge low-level geometry and high-level 3D semantics.
+- **Hierarchical Feature Distillation:** Aligning multi-scale representations from 3D foundation models (e.g., VGGT) to seamlessly bridge low-level geometry and high-level semantics.
 
 ## 📝 TODO List
 
@@ -47,7 +47,7 @@ Set your own `weight_path` to storage the pretrained weights.
 | Model | Base MLLM | 3D Teacher | Data | VSI-Bench | Download |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `GeoVR-VGGT-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | 69.1 | [🤗link](https://huggingface.co/WHB139426/GeoVR/tree/main/GeoVR-VGGT-Qwen3-VL-2B) |
-| `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | - | TBD |
+| `GeoVR-Omega-Qwen3-VL-2B` | [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | [VGGT-Omega](https://huggingface.co/facebook/VGGT-Omega) | VSI-590K + VLM-3R-200K | 68.1 | [🤗link](https://huggingface.co/WHB139426/GeoVR/tree/main/GeoVR-Omega-Qwen3-VL-2B) |
 | `GeoVR-VGGT-Qwen3-VL-4B` | [Qwen3-VL-4B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | - | TBD |
 | `GeoVR-VGGT-Qwen3-VL-8B` | [Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) | [VGGT-1B](https://huggingface.co/facebook/VGGT-1B) | VSI-590K + VLM-3R-200K | - | TBD |
 
