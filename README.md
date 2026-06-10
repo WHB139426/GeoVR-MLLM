@@ -11,7 +11,7 @@
 
 <div style="font-family: charter;" align="center">
     <a href="https://whb139426.github.io/" target="_blank">Haibo Wang</a><sup>1</sup>,
-    <a href="https://wilburone.github.io/" target="_blank">Lifu Huang</a><sup>1</sup>,
+    <a href="https://wilburone.github.io/" target="_blank">Lifu Huang</a><sup>1</sup>
 </div>
 
 <div style="font-family: charter;" align="center">
