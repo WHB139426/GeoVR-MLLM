@@ -1,6 +1,5 @@
 <h2 align="center"> Learning Geometric Representations from Videos for Spatial Intelligent Multimodal Large Language Models </h2>
 
-🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence.
 
 <h5 align="center">
 
@@ -9,19 +8,30 @@
 
 </h5>
 
+
+<div style="font-family: charter;" align="center">
+    <a href="https://whb139426.github.io/" target="_blank">Haibo Wang</a><sup>1</sup>,
+    <a href="https://wilburone.github.io/" target="_blank">Lifu Huang</a><sup>1</sup>,
+</div>
+
+<div style="font-family: charter;" align="center">
+    <sup>1</sup>University of California, Davis&nbsp;&nbsp;
+</div>
+
 <div align="center">
   <img src="assets/method.png"/>
 </div><br/>
 
-💡 We sharpen our model by incorporating:
+🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence. We sharpen our model by incorporating:
 - **Multi-Objective Geometric Learning:** Jointly optimizing camera poses, depth maps and metric scales to capture dynamic multi-view consistency and static physical scales.
 - **Hierarchical Feature Distillation:** Aligning multi-scale representations from 3D foundation models (e.g., VGGT) to seamlessly bridge low-level geometry and high-level semantics.
 
 ## 📝 TODO List
 
 - [x] Release training/evaluation scripts and GeoVR-2B weights
-- [ ] Release GeoVR-4B/8B weights
-- [ ] Release GeoVR-2B/4B/8B trained on datasets mixed with general video understanding tasks
+- [ ] Release GeoVR-4B weights
+- [ ] Release GeoVR-8B weights
+- [ ] Release models trained on datasets mixed with general video understanding tasks
 
 ## 🛠️ Install
 1. Clone this repository and navigate to folder
