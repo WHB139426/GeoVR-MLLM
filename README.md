@@ -10,12 +10,12 @@
 
 
 <div style="font-family: charter;" align="center">
-    <a href="https://whb139426.github.io/" target="_blank">Haibo Wang</a><sup>1</sup>,
-    <a href="https://wilburone.github.io/" target="_blank">Lifu Huang</a><sup>1</sup>
+    <a href="https://whb139426.github.io/" target="_blank">Haibo Wang</a>,
+    <a href="https://wilburone.github.io/" target="_blank">Lifu Huang</a>
 </div>
 
 <div style="font-family: charter;" align="center">
-    <sup>1</sup>University of California, Davis&nbsp;&nbsp;
+    University of California, Davis&nbsp;&nbsp;
 </div>
 
 <div align="center">
