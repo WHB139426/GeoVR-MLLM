@@ -17,10 +17,10 @@
 <div style="font-family: charter;" align="center">
     University of California, Davis&nbsp;&nbsp;
 </div>
-
+<!-- 
 <div align="center">
   <img src="assets/method.png"/>
-</div><br/>
+</div><br/> -->
 
 🌟 This is the official repository of the GeoVR, a paradigm to restructure MLLM’s intrinsic representations with geometric awareness using purely 2D videos for Spatial Intelligence. We sharpen our model by incorporating:
 - **Multi-Objective Geometric Learning:** Jointly optimizing camera poses, depth maps and metric scales to capture dynamic multi-view consistency and static physical scales.
